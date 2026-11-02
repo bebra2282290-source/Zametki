@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:"
+    />
+    <title>Заметки</title>
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="list.css" />
+  </head>
+  <body>
+    <header class="titlebar">
+      <img class="logo" src="../assets/icon.png" alt="" />
+      <span class="app-name">Заметки</span>
+      <span class="count" id="count"></span>
+    </header>
+
+    <div class="toolbar">
+      <label class="search">
+        <svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+        <input id="search" type="search" placeholder="Найти заметку" autocomplete="off" spellcheck="false" />
+      </label>
+      <button class="btn btn-accent" id="btn-new" title="Новая заметка (Ctrl+N)">
+        <svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+        Новая
+      </button>
+    </div>
+
+    <main class="scroller" id="scroller">
+      <div class="grid" id="grid"></div>
+
+      <div class="empty" id="empty" hidden>
+        <img class="empty-art" src="../assets/icon.png" alt="" />
+        <p class="empty-title">Здесь пока тихо</p>
+        <p class="empty-text">Создайте первую заметку — её можно закрепить поверх всех окон, двигать и растягивать как удобно.</p>
+        <button class="btn btn-accent" id="btn-new-empty">
+          <svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+          Создать заметку
+        </button>
+      </div>
+
+      <div class="empty empty-small" id="nothing" hidden>
+        <p class="empty-title">Ничего не нашлось</p>
+        <p class="empty-text">Попробуйте другое слово.</p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <label class="toggle" id="login-toggle" hidden>
+        <input type="checkbox" id="open-at-login" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span>Запускать вместе с Windows</span>
+      </label>
+      <div class="footer-actions">
+        <button class="link-btn" id="btn-show-all" title="Открыть все заметки на рабочем столе">Показать все</button>
+        <button class="link-btn" id="btn-hide-all" title="Убрать все заметки с рабочего стола">Спрятать все</button>
+      </div>
+    </footer>
+
+    <div class="confirm" id="confirm" hidden>
+      <div class="confirm-card" role="alertdialog" aria-labelledby="confirm-title">
+        <p class="confirm-title" id="confirm-title">Удалить заметку?</p>
+        <p class="confirm-text" id="confirm-text">Вернуть её уже не получится.</p>
+        <div class="confirm-actions">
+          <button class="btn" id="confirm-cancel">Оставить</button>
+          <button class="btn btn-danger" id="confirm-ok">Удалить</button>
+        </div>
+      </div>
+    </div>
+
+    <template id="tpl-card">
+      <article class="card" tabindex="0">
+        <div class="card-head">
+          <h3 class="card-title"></h3>
+          <div class="card-actions">
+            <button class="icon-btn card-pin" title="Закрепить поверх окон">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M12 17v5" />
+                <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" />
+              </svg>
+            </button>
+            <button class="icon-btn card-delete" title="Удалить заметку">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M4 7h16" />
+                <path d="M18 7v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7" />
+                <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p class="card-body"></p>
+        <div class="card-foot">
+          <span class="card-date"></span>
+          <span class="card-badge card-badge-pin">поверх окон</span>
+          <span class="card-badge card-badge-hidden">спрятана</span>
+        </div>
+      </article>
+    </template>
+
+    <script src="list.js"></script>
+  </body>
+</html>

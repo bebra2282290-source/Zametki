@@ -1,0 +1,342 @@
+body {
+  --fs: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--note-bg);
+  transition: background-color 0.25s var(--ease);
+  user-select: none;
+}
+
+/* ---------------- Шапка: за неё окно перетаскивается ---------------- */
+
+.head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 38px;
+  flex: none;
+  padding: 0 6px;
+  background: var(--note-head);
+  -webkit-app-region: drag;
+  transition: background-color 0.25s var(--ease);
+}
+
+.head .icon-btn {
+  -webkit-app-region: no-drag;
+}
+
+/* Когда окно не в фокусе, кнопки притихают и не отвлекают. */
+body.is-blurred .head .icon-btn {
+  opacity: 0.35;
+}
+body.is-blurred .head:hover .icon-btn {
+  opacity: 1;
+}
+
+#btn-pin.is-active {
+  color: var(--note-accent);
+  background: rgba(255, 255, 255, 0.65);
+  opacity: 1;
+}
+#btn-pin.is-active .i {
+  fill: currentColor;
+  fill-opacity: 0.25;
+  transform: rotate(-20deg);
+}
+#btn-pin .i {
+  transition: transform 0.2s var(--ease);
+}
+
+#btn-menu.is-open {
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--ink);
+}
+
+#btn-close:hover {
+  background: rgba(196, 88, 76, 0.14);
+  color: var(--danger);
+}
+
+.pin-badge {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--note-accent);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  pointer-events: none;
+}
+.pin-badge .i {
+  width: 12px;
+  height: 12px;
+}
+body.is-pinned .pin-badge {
+  opacity: 0.9;
+  transform: none;
+}
+
+/* ---------------- Текст заметки ---------------- */
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: 10px 6px 6px 16px;
+}
+
+.title,
+.body {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  user-select: text;
+}
+
+.title {
+  flex: none;
+  padding: 0 10px 4px 0;
+  font-size: calc(var(--fs) + 3px);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  padding: 4px 10px 16px 0;
+  resize: none;
+  font-size: var(--fs);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.title::placeholder,
+.body::placeholder {
+  color: var(--ink-faint);
+  opacity: 0.85;
+  font-weight: 600;
+}
+
+/* ---------------- Уголок для изменения размера ---------------- */
+
+.grip {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  cursor: nwse-resize;
+  color: var(--ink-faint);
+  opacity: 0.55;
+  transition: opacity 0.2s var(--ease), color 0.2s var(--ease);
+}
+.grip:hover {
+  opacity: 1;
+  color: var(--note-accent);
+}
+.grip svg {
+  width: 11px;
+  height: 11px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* ---------------- Меню ---------------- */
+
+.menu {
+  position: fixed;
+  top: 42px;
+  right: 6px;
+  z-index: 20;
+  width: min(224px, calc(100vw - 12px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  transform-origin: top right;
+  animation: pop-in 0.16s var(--ease);
+}
+.menu[hidden] {
+  display: none;
+}
+
+.menu-section + .menu-section {
+  margin-top: 10px;
+}
+
+.menu-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink-soft);
+}
+
+.menu-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.menu-row .menu-label {
+  margin: 0;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--paper);
+}
+.stepper .menu-value {
+  min-width: 22px;
+  font-size: 13px;
+  text-align: center;
+}
+.stepper .icon-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+}
+.stepper .icon-btn:hover {
+  background: #fff;
+}
+.stepper .i {
+  width: 14px;
+  height: 14px;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.swatch {
+  width: 22px;
+  height: 22px;
+  margin: 0 auto;
+  padding: 0;
+  border: 1px solid rgba(74, 58, 46, 0.12);
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--note-bg) 45%, var(--note-head) 46%);
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.swatch:hover {
+  transform: scale(1.12);
+}
+.swatch.is-selected {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--note-accent);
+}
+.swatch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Ползунок прозрачности */
+.range {
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.range:focus {
+  outline: none;
+}
+.range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--paper-deep), var(--accent-soft));
+}
+.range::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 1px 4px rgba(110, 72, 40, 0.3);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.menu-divider {
+  height: 1px;
+  margin: 10px -12px 6px;
+  background: var(--line);
+}
+
+.menu-actions {
+  display: flex;
+  gap: 4px;
+  margin: 0 -6px -6px;
+}
+
+.menu-item {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 8px;
+  white-space: nowrap;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  transition: background-color 0.15s var(--ease);
+}
+.menu-item:hover,
+.menu-item:focus-visible {
+  outline: none;
+  background: var(--paper);
+}
+.menu-item .i {
+  color: var(--ink-soft);
+}
+.menu-item-danger,
+.menu-item-danger .i {
+  color: var(--danger);
+}
+.menu-item-danger:hover,
+.menu-item-danger:focus-visible {
+  background: var(--danger-soft);
+}
