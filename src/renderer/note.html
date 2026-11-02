@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:"
+    />
+    <title>Заметка</title>
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="note.css" />
+  </head>
+  <body data-color="cream">
+    <header class="head" id="head">
+      <button class="icon-btn" id="btn-new" title="Новая заметка (Ctrl+N)" aria-label="Новая заметка">
+        <svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+      </button>
+
+      <div class="pin-badge" id="pin-badge" aria-hidden="true">
+        <svg class="i" viewBox="0 0 24 24">
+          <path d="M12 17v5" />
+          <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" />
+        </svg>
+        <span>поверх окон</span>
+      </div>
+
+      <button class="icon-btn" id="btn-pin" title="Закрепить поверх всех окон (Ctrl+P)" aria-label="Закрепить поверх всех окон" aria-pressed="false">
+        <svg class="i" viewBox="0 0 24 24">
+          <path d="M12 17v5" />
+          <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" />
+        </svg>
+      </button>
+      <button class="icon-btn" id="btn-menu" title="Цвет, прозрачность, размер текста" aria-label="Настройки заметки" aria-haspopup="true" aria-expanded="false">
+        <svg class="i" viewBox="0 0 24 24">
+          <circle class="i-dot" cx="5" cy="12" r="1.7" />
+          <circle class="i-dot" cx="12" cy="12" r="1.7" />
+          <circle class="i-dot" cx="19" cy="12" r="1.7" />
+        </svg>
+      </button>
+      <button class="icon-btn" id="btn-close" title="Спрятать заметку (Ctrl+W). Она останется в списке" aria-label="Спрятать заметку">
+        <svg class="i" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+    </header>
+
+    <main class="content">
+      <input
+        class="title"
+        id="title"
+        type="text"
+        placeholder="Заголовок"
+        spellcheck="true"
+        autocomplete="off"
+        maxlength="200"
+      />
+      <textarea class="body" id="body" placeholder="Напишите что-нибудь…" spellcheck="true"></textarea>
+    </main>
+
+    <div class="grip" id="grip" title="Потяните, чтобы изменить размер" aria-hidden="true">
+      <svg viewBox="0 0 12 12"><path d="M11 4 4 11M11 8 8 11" /></svg>
+    </div>
+
+    <section class="menu" id="menu" role="dialog" aria-label="Настройки заметки" hidden>
+      <div class="menu-section">
+        <div class="menu-label">Цвет</div>
+        <div class="swatches" id="swatches">
+          <button class="swatch" data-color="cream" data-value="cream" title="Сливочный" aria-label="Сливочный"></button>
+          <button class="swatch" data-color="peach" data-value="peach" title="Персиковый" aria-label="Персиковый"></button>
+          <button class="swatch" data-color="rose" data-value="rose" title="Розовый" aria-label="Розовый"></button>
+          <button class="swatch" data-color="honey" data-value="honey" title="Медовый" aria-label="Медовый"></button>
+          <button class="swatch" data-color="sage" data-value="sage" title="Шалфей" aria-label="Шалфей"></button>
+          <button class="swatch" data-color="lavender" data-value="lavender" title="Лавандовый" aria-label="Лавандовый"></button>
+          <button class="swatch" data-color="latte" data-value="latte" title="Латте" aria-label="Латте"></button>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-label">
+          Прозрачность окна <span class="menu-value" id="opacity-value">100%</span>
+        </div>
+        <input class="range" id="opacity" type="range" min="40" max="100" step="5" value="100" aria-label="Прозрачность окна" />
+      </div>
+
+      <div class="menu-section menu-row">
+        <div class="menu-label">Размер текста</div>
+        <div class="stepper">
+          <button class="icon-btn" id="font-dec" title="Мельче (Ctrl+−)" aria-label="Уменьшить текст">
+            <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14" /></svg>
+          </button>
+          <span class="menu-value" id="font-value">15</span>
+          <button class="icon-btn" id="font-inc" title="Крупнее (Ctrl+=)" aria-label="Увеличить текст">
+            <svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="menu-divider"></div>
+
+      <div class="menu-actions">
+        <button class="menu-item" id="item-list" title="Открыть список всех заметок">
+          <svg class="i" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" /></svg>
+          Все заметки
+        </button>
+        <button class="menu-item menu-item-danger" id="item-delete" title="Удалить заметку">
+          <svg class="i" viewBox="0 0 24 24">
+            <path d="M4 7h16" />
+            <path d="M18 7v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7" />
+            <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+          </svg>
+          Удалить
+        </button>
+      </div>
+    </section>
+
+    <div class="confirm" id="confirm" hidden>
+      <div class="confirm-card" role="alertdialog" aria-labelledby="confirm-title">
+        <p class="confirm-title" id="confirm-title">Удалить заметку?</p>
+        <p class="confirm-text">Вернуть её уже не получится.</p>
+        <div class="confirm-actions">
+          <button class="btn" id="confirm-cancel">Оставить</button>
+          <button class="btn btn-danger" id="confirm-ok">Удалить</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="note.js"></script>
+  </body>
+</html>

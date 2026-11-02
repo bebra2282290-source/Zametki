@@ -1,0 +1,390 @@
+body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 60% at 0% 0%, rgba(253, 226, 204, 0.55), transparent 60%),
+    radial-gradient(90% 50% at 100% 100%, rgba(250, 232, 196, 0.5), transparent 60%),
+    var(--paper);
+  user-select: none;
+}
+
+/* ---------------- Заголовок окна (кнопки Windows справа — системные) ---------------- */
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  height: env(titlebar-area-height, 44px);
+  min-height: 44px;
+  padding: 0 16px;
+  padding-right: calc(100vw - env(titlebar-area-width, 100vw) + 12px);
+  -webkit-app-region: drag;
+}
+
+.logo {
+  width: 22px;
+  height: 22px;
+}
+
+.app-name {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.count {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--accent-hover);
+}
+.count:empty {
+  display: none;
+}
+
+/* ---------------- Поиск и кнопка ---------------- */
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex: none;
+  padding: 6px 16px 12px;
+}
+
+.search {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.85);
+  color: var(--ink-faint);
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.search:focus-within {
+  border-color: rgba(221, 122, 78, 0.45);
+  box-shadow: 0 0 0 4px rgba(221, 122, 78, 0.12);
+  color: var(--accent);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.search input::placeholder {
+  color: var(--ink-faint);
+}
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.toolbar .btn {
+  height: 38px;
+  padding: 0 16px;
+}
+
+/* ---------------- Карточки ---------------- */
+
+.scroller {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 12px 16px 16px;
+  scrollbar-gutter: stable;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 118px;
+  padding: 12px 12px 10px 14px;
+  border-radius: var(--radius);
+  background: var(--note-bg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease), opacity 0.18s var(--ease);
+}
+.card.is-new {
+  animation: pop-in 0.22s var(--ease) both;
+}
+/* Полоска «скотча» — как будто заметку приклеили */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 46px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--note-head);
+  opacity: 0.85;
+  transform: translateX(-50%) rotate(-2deg);
+  box-shadow: 0 1px 2px rgba(110, 72, 40, 0.08);
+}
+.card:hover {
+  transform: translateY(-2px) rotate(-0.3deg);
+  box-shadow: var(--shadow-md);
+}
+.card:focus-visible {
+  box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--note-accent);
+}
+.card.is-closed {
+  opacity: 0.86;
+}
+.card.is-closed:hover {
+  opacity: 1;
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.card-title {
+  flex: 1;
+  min-width: 0;
+  margin: 2px 0 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 14.5px;
+  font-weight: 800;
+  line-height: 1.3;
+  word-break: break-word;
+}
+.card-title.is-untitled {
+  color: var(--ink-faint);
+  font-weight: 700;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0;
+  margin: -4px -4px 0 0;
+  opacity: 0;
+  transition: opacity 0.15s var(--ease);
+}
+.card:hover .card-actions,
+.card:focus-within .card-actions,
+.card.is-pinned .card-actions {
+  opacity: 1;
+}
+.card.is-pinned:not(:hover):not(:focus-within) .card-delete {
+  visibility: hidden;
+}
+.card-actions .icon-btn {
+  width: 26px;
+  height: 26px;
+}
+.card-actions .i {
+  width: 15px;
+  height: 15px;
+}
+.card.is-pinned .card-pin {
+  color: var(--note-accent);
+}
+.card.is-pinned .card-pin .i {
+  fill: currentColor;
+  fill-opacity: 0.25;
+  transform: rotate(-20deg);
+}
+.card-delete:hover {
+  background: rgba(196, 88, 76, 0.14);
+  color: var(--danger);
+}
+
+.card-body {
+  flex: 1;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  white-space: pre-line;
+  word-break: break-word;
+}
+.card-body:empty {
+  display: none;
+}
+
+.card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+.card-date {
+  margin-right: auto;
+}
+.card-badge {
+  display: none;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--note-accent);
+}
+.card.is-pinned .card-badge-pin,
+.card.is-closed .card-badge-hidden {
+  display: inline-block;
+}
+.card-badge-hidden {
+  color: var(--ink-faint);
+}
+
+/* ---------------- Пустой список ---------------- */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 300px;
+  margin: 48px auto 0;
+  text-align: center;
+  animation: pop-in 0.25s var(--ease);
+}
+.empty[hidden] {
+  display: none;
+}
+.empty-art {
+  width: 84px;
+  height: 84px;
+  margin-bottom: 14px;
+  transform: rotate(-6deg);
+  filter: drop-shadow(0 8px 16px rgba(110, 72, 40, 0.15));
+}
+.empty-title {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 800;
+}
+.empty-text {
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.empty-small {
+  margin-top: 32px;
+}
+
+/* ---------------- Подвал ---------------- */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  flex: none;
+  min-height: 48px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--line);
+  background: rgba(255, 253, 249, 0.6);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.footer-actions {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.link-btn {
+  padding: 4px 8px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  transition: background-color 0.15s var(--ease), color 0.15s var(--ease);
+}
+.link-btn:hover {
+  background: var(--paper-deep);
+  color: var(--ink);
+}
+.link-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Переключатель */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.toggle[hidden] {
+  display: none;
+}
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.toggle-track {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--paper-deep);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition: background-color 0.2s var(--ease);
+}
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(110, 72, 40, 0.3);
+  transition: transform 0.2s var(--ease);
+}
+.toggle input:checked + .toggle-track {
+  background: var(--accent);
+  box-shadow: none;
+}
+.toggle input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(14px);
+}
+.toggle input:focus-visible + .toggle-track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

@@ -1,0 +1,64 @@
+name: Сборка для Windows
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Установка зависимостей
+        run: npm ci
+
+      - name: Проверки и тесты
+        run: npm run check
+
+      - name: Сборка установщика и portable-версии
+        run: npm run dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Пробный запуск собранного приложения
+        shell: pwsh
+        run: |
+          $app = Start-Process -FilePath "dist\win-unpacked\Zametki.exe" -PassThru
+          Start-Sleep -Seconds 20
+          $file = Join-Path $env:APPDATA "Zametki\notes.json"
+          $alive = -not $app.HasExited
+          Get-Process Zametki -ErrorAction SilentlyContinue | Stop-Process -Force
+          if (-not $alive) { throw "Приложение закрылось сразу после запуска" }
+          if (-not (Test-Path $file)) { throw "Файл с заметками не создан: $file" }
+          $data = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($data.notes.Count -lt 1) { throw "Приветственная заметка не сохранилась" }
+          Write-Output "OK: приложение запустилось и сохранило $($data.notes.Count) заметку(и)"
+
+      - name: Загрузка сборки
+        uses: actions/upload-artifact@v4
+        with:
+          name: Zametki-Windows
+          path: |
+            dist/Zametki-Setup-*.exe
+            dist/Zametki-Portable-*.exe
+          if-no-files-found: error
+
+      - name: Релиз (для тегов v*)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Zametki-Setup-*.exe
+            dist/Zametki-Portable-*.exe

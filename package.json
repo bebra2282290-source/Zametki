@@ -1,0 +1,68 @@
+{
+  "name": "zametki",
+  "productName": "Zametki",
+  "version": "1.0.0",
+  "description": "Тёплые заметки для Windows, которые можно закрепить поверх всех окон",
+  "main": "src/main/main.js",
+  "author": "RSH8",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "check": "node --check src/main/main.js && node --check src/main/store.js && node --check src/preload.js && node --check src/renderer/list.js && node --check src/renderer/note.js && node --test",
+    "icons": "node scripts/build-icons.js",
+    "dist": "electron-builder --win --x64 --publish never",
+    "dist:dir": "electron-builder --win --x64 --dir --publish never"
+  },
+  "devDependencies": {
+    "electron": "^45.2.1",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "com.rsh8.zametki",
+    "productName": "Zametki",
+    "copyright": "Copyright © 2026 RSH8",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Заметки",
+      "uninstallDisplayName": "Заметки",
+      "language": "1049",
+      "installerLanguages": [
+        "ru_RU"
+      ],
+      "artifactName": "Zametki-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "Zametki-Portable-${version}.${ext}"
+    }
+  }
+}
